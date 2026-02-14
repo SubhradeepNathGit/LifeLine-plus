@@ -1,0 +1,25 @@
+<% const getInitials=(name)=> {
+    if (!name) return 'A';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    }; %>
+
+    <div class="top-nav">
+        <div class="nav-title">
+            <h5 class="text-main">
+                <%= locals.title || 'Admin Dashboard' %>
+            </h5>
+        </div>
+
+        <div class="nav-actions flex-center gap-4">
+            <div class="user-profile-nav">
+                <div class="user-info-text text-right">
+                    <span class="fw-700 text-main block">
+                        <%= user ? user.name : 'System Admin' %>
+                    </span>
+                    <span class="text-muted text-xs">
+                        <%= user ? user.email : 'admin@lifeline.com' %>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>

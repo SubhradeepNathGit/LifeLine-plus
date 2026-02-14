@@ -1,0 +1,138 @@
+<%- include('../partials/head') %>
+
+    <div class="dashboard-container">
+        <%- include('../partials/sidebar') %>
+
+            <div class="dashboard-content">
+                <%- include('../partials/header') %>
+
+                    <main class="main-scroll-area">
+                        <div class="content-wrapper">
+                            <div class="welcome-header mb-4">
+                                <h3 class="text-main">
+                                    Welcome back, <%= user ? user.name.split(' ')[0] : ' Admin' %>!
+                                </h3>
+                                <p class="text-muted">Here's a quick overview of the LifeLine + ecosystem.</p>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #e8f0fe;">
+                                        <i class="fas fa-user-md" style="color: #223a66;"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>
+                                            <%= doctors.length %>
+                                        </h3>
+                                        <p>Active Doctors</p>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #eefaf1;">
+                                        <i class="fas fa-users" style="color: #28a745;"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>
+                                            <%= users.length %>
+                                        </h3>
+                                        <p>Total Patients</p>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #fff5f7;">
+                                        <i class="fas fa-clock" style="color: #e12454;"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>
+                                            <%= pendingDoctors.length %>
+                                        </h3>
+                                        <p>Pending Verifications</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="premium-card">
+                                <div class="card-header">
+                                    <h6>Doctor Verification Requests</h6>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="premium-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Doctor Details</th>
+                                                <th>Email</th>
+                                                <th>Verification Document</th>
+                                                <th>Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if(pendingDoctors.length> 0) { %>
+                                                <% pendingDoctors.forEach(doc=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="bold text-main">
+                                                                <%= doc.name %>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-muted">
+                                                            <%= doc.email %>
+                                                        </td>
+                                                        <td>
+                                                            <% if(doc.verificationDocument) { %>
+                                                                <a href="<%= doc.verificationDocument %>"
+                                                                    target="_blank" class="btn-premium btn-outline">
+                                                                    <i class="fas fa-file-pdf"></i> View
+                                                                </a>
+                                                                <% } else { %>
+                                                                    <span class="text-muted text-xs">No document</span>
+                                                                    <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge-premium badge-pending">
+                                                                <i class="fas fa-hourglass-half"></i> Pending
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <div class="flex-center gap-2">
+                                                                <form action="/admin/verify-doctor" method="POST"
+                                                                    style="margin: 0;">
+                                                                    <input type="hidden" name="id"
+                                                                        value="<%= doc._id %>">
+                                                                    <input type="hidden" name="status" value="approved">
+                                                                    <button type="submit"
+                                                                        class="btn-premium btn-approve">Approve</button>
+                                                                </form>
+                                                                <form action="/admin/verify-doctor" method="POST"
+                                                                    style="margin: 0;">
+                                                                    <input type="hidden" name="id"
+                                                                        value="<%= doc._id %>">
+                                                                    <input type="hidden" name="status" value="rejected">
+                                                                    <button type="submit"
+                                                                        class="btn-premium btn-reject">Reject</button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                                        <% } else { %>
+                                                            <tr>
+                                                                <td colspan="5" class="text-center text-muted"
+                                                                    style="padding: 3rem;">
+                                                                    No pending verification requests.
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+            </div>
+    </div>
+    </body>
+
+    </html>
