@@ -1,25 +1,17 @@
 
 const express = require('express');
-
 const router = express.Router();
-const AuthRouter = require('./authRouter');
-const HomeRouter = require('./homeRoute');
-const StudentApiRouter = require('./studenApi');
-const StudentEjsRouter = require('./studentEjsRoute');
-const IndexingRouter = require('./indexingRouter');
-const CsvRouter = require('./csvRoute');
-const ComparisonRouter = require('./ComparisonRoute');
-const ProductRouter = require('./productApi');
 
+// Import Route Files
+const authRoutes = require('./auth.routes');
+const userRoutes = require('./user.routes');
+const apiRoutes = require('./api.routes');
+const adminRoutes = require('./admin.routes');
 
+// Define Route Paths
+router.use('/api/auth', authRoutes);
+router.use('/api/user', userRoutes);
+router.use('/api', apiRoutes);
+router.use('/admin', adminRoutes);
 
-router.use('/auth', AuthRouter);
-router.use(HomeRouter);
-router.use('/student', StudentApiRouter);
-router.use('/studentEjs', StudentEjsRouter);
-router.use('/indexing', IndexingRouter);
-router.use('/csv', CsvRouter);
-router.use('/comparison', ComparisonRouter);
-router.use('/product', ProductRouter);
-
-module.exports = router
+module.exports = router;

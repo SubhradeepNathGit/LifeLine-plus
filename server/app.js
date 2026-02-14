@@ -4,61 +4,48 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
-// Load Config & Utilities
 const connectDB = require('./src/config/db');
 const Limiter = require('./src/utils/rateLimit.util');
-
-// Load Middlewares
 const configureSecurity = require('./src/middlewares/security.middleware');
 const spaHandler = require('./src/middlewares/spa.middleware');
 const errorHandler = require('./src/middlewares/errorHandler.middleware');
-
-// Load Routes
-const allRoutes = require('./index');
+const allRoutes = require('./src/routes/index');
 
 const app = express();
-const PORT = process.env.PORT || 3006;
-
-// Initialize Database
 connectDB();
 
-// View Engine Configuration
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Core Middlewares
+// Middlewares
 configureSecurity(app);
 app.use(Limiter);
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Static Asset Directories
+// View Engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Static Folders
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploadsShare', express.static(path.join(__dirname, 'uploadsShare')));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// Application Routes
+// Routes
 app.use(allRoutes);
 
-// Hybrid Integration (React SPA Catch-all)
+// SPA & Error Handling
 app.use(spaHandler);
-
-// Global Error Orchestration
 app.use(errorHandler);
 
-// Start Server
+const PORT = process.env.PORT || 3006;
 const server = app.listen(PORT, () => {
-    console.log(`Server is running precisely on port ${PORT}`);
-    console.log(`Views directory: ${app.get('views')}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Server is running on port ${PORT}`);
 });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
+//global event-listener (if something critical and unexpected breaks your app's async logic, the app shuts down cleanly and restarts)
+process.on('unhandledRejection', (err) => {
     console.log(`Error: ${err.message}`);
-    // Close server & exit process
     server.close(() => process.exit(1));
 });
 
