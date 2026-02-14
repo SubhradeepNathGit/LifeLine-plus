@@ -10,6 +10,7 @@ const configureSecurity = require('./src/middlewares/security.middleware');
 const spaHandler = require('./src/middlewares/spa.middleware');
 const errorHandler = require('./src/middlewares/errorHandler.middleware');
 const allRoutes = require('./src/routes/index');
+const startCleanupJob = require('./src/jobs/cleanup.job');
 
 const app = express();
 connectDB();
@@ -41,6 +42,8 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3006;
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    // Start Background Jobs
+    startCleanupJob();
 });
 
 //global event-listener (if something critical and unexpected breaks your app's async logic, the app shuts down cleanly and restarts)
